@@ -1,7 +1,7 @@
 GoPostStuff
 ===========
 
-GoPostStuff is a simple client for posting binaries to Usenet, written in Go. If you've 
+GoPostStuff is a simple client for posting binaries to Usenet, written in Go. If you've
 seen/used [newsmangler] [1], imagine that but faster (and maybe better one day).
 
   [1]: https://github.com/madcowfred/newsmangler/ "newsmangler"
@@ -28,17 +28,17 @@ Installation
         mkdir ~/go
         export GOPATH="~/go"
 
-1.  Get and install GoPostStuff - this will make a ~/go/bin/GoPostStuff binary:
+1.  Get and install GoPostStuff - this will make a ~/go/bin/gopoststuff binary:
 
-        go get github.com/madcowfred/GoPostStuff
-        go install github.com/madcowfred/GoPostStuff
+        go get github.com/f4n4t/gopoststuff
+        go install github.com/f4n4t/gopoststuff
 
 3. Copy sample.conf to ~/.gopoststuff.conf and edit the options as appropriate.
 
         cp sample.conf ~/.gopoststuff.conf
         vim ~/.gopoststuff.conf
 
-4. Run GoPostStuff!
+4. Run gopoststuff!
 
 Usage
 -----
@@ -52,6 +52,9 @@ Usage
 * -s "SUBJECT": Use subject posting mode. All files will be posted using SUBJECT as the subject.
   Directories supplied as arguments are always recursed into.
 * -v: Verbose mode. This will spam a lot of extra debug information.
+* -version: prints the current gps version.
+* -nzb "test.nzb": Create nzb file after posting.
+
 
 Example
 -------
