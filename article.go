@@ -88,6 +88,5 @@ func NewArticle(p []byte, data *ArticleData, subject string) *Article {
         Number: data.PartNum,
         MessageId: msgid,
     }
-    //AppendNzb("/tmp/dat1", article)
     return &Article{Body: buf.Bytes(), NzbData: n, Segment: s, FileName: data.FileName}
 }
