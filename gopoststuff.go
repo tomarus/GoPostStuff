@@ -1,6 +1,7 @@
 package main
 
 import (
+    "fmt"
     "flag"
     "os"
     "os/user"
@@ -23,7 +24,8 @@ var subjectFlag = flag.String("s", "", "Subject to use")
 var verboseFlag = flag.Bool("v", false, "Show verbose debug information")
 var cpuProfileFlag = flag.String("cpuprofile", "", "Write CPU profiling information to FILE")
 var allCpuFlag = flag.Bool("allcpus", false, "Use all CPUs for stuff [ALPHA]")
-var nzbFlag = flag.String("n", "", "Nzb filename")
+var versionFlag = flag.Bool("version", false, "prints current version")
+var nzbFlag = flag.String("nzb", "", "Nzb filename")
 
 // Logger
 var log = logging.MustGetLogger("gopoststuff")
@@ -51,8 +53,21 @@ var Config struct {
 }
 
 func main() {
+    // Use our own Usage function to print version number
+    flag.Usage = func() {
+        fmt.Println("Version: ", GPS_VERSION)
+        fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
+        flag.PrintDefaults()
+    }
+
     // Parse command line flags
     flag.Parse()
+
+    // Check for version argument
+    if *versionFlag {
+        fmt.Println("Version: ", GPS_VERSION)
+        os.Exit(0)
+    }
 
     // Set up logging
     var format = logging.MustStringFormatter(" %{level: -8s}  %{message}")
