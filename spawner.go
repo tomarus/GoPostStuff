@@ -55,7 +55,7 @@ func Spawner(filenames []string) {
 	tdchan := make(chan *simplenntp.TimeData, 100000)
 
 	// Use specified server
-	serverList := make(map[string]*ConfigServer, 0)
+	serverList := make(map[string]*ConfigServer, len(Config.Server))
 	if len(*serverFlag) > 0 {
 		serverList[*serverFlag] = Config.Server[*serverFlag]
 	} else if len(Config.Global.DefaultServer) > 0 {
@@ -121,7 +121,6 @@ func Spawner(filenames []string) {
 					}
 					a := NewArticle(md.data[start:end], ad, subject)
 					c <- a
-					//log.Debug("%s %d = %d -> %d", fd.path, i, start, end)
 				}
 
 				if md.Decrement() {
@@ -175,7 +174,6 @@ func Spawner(filenames []string) {
 						nzbinfo[article.FileName] = article.NzbData
 						segs[article.FileName] = append(segs[article.FileName], article.Segment)
 					}
-					// log.Info(article.ArticleFile.Poster)
 					t.bytes += int64(len(article.Body))
 				}
 
@@ -213,10 +211,9 @@ func Spawner(filenames []string) {
 
 			// Calculate and log the result
 			dur := maxEnd.Sub(minStart)
-			//speedKB := float64(totalBytes) / dur.Seconds() / 1024
 			speed, speedUnit := prettySize(float64(totalBytes) / dur.Seconds())
 			totalMB := float64(totalBytes) / 1024 / 1024
-			//log.Info("[%s] Posted %.1fMiB in %s at %.1fKB/s", name, totalMB, dur.String(), speedKB)
+
 			log.Info("[%s] Posted %.1fMiB in %s at %.1f%s/s", name, totalMB, dur.String(), speed, speedUnit)
 		}(tchan)
 	}

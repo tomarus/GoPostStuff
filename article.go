@@ -3,16 +3,16 @@ package main
 import (
     "bytes"
     "fmt"
-    "github.com/madcowfred/yencode"
+    "github.com/f4n4t/gopoststuff/yencode"
     "hash/crc32"
-    "time"
     "strings"
+    "time"
 )
 
 type Article struct {
-    Body []byte
-    NzbData NzbFile
-    Segment NzbSegment
+    Body     []byte
+    NzbData  NzbFile
+    Segment  NzbSegment
     FileName string
 }
 
@@ -42,14 +42,8 @@ func NewArticle(p []byte, data *ArticleData, subject string) *Article {
 
     var msgid string
     t := time.Now()
-
-    unix := t.Unix()
-    unixNano := t.UnixNano()
-    msgid = fmt.Sprintf("%.5f$gps@gopoststuff", float64(unixNano) / 1.0e9)
+    msgid = fmt.Sprintf("%.5f$gps@gopoststuff", float64(t.UnixNano())/1.0e9)
     buf.WriteString(fmt.Sprintf("Message-ID: <%s>\r\n", msgid))
-    // art.headers['Message-ID'] = '<%.5f.%d@%s>' % (time.time(), partnum, self.conf['server']['hostname'])
-    //headers["X-Newsposter"] = "gopoststuff alpha - https://github.com/madcowfred/gopoststuff"
-    //buf.WriteString(fmt.Sprintf("X-Newsposter: gopoststuff %s - https://github.com/madcowfred/gopoststuff\r\n", GPS_VERSION))
     buf.WriteString(fmt.Sprintf("X-Newsposter: KereMagicPoster\r\n"))
 
     // Build subject
@@ -78,14 +72,14 @@ func NewArticle(p []byte, data *ArticleData, subject string) *Article {
     buf.WriteString(fmt.Sprintf("=yend size=%d part=%d pcrc32=%08X\r\n", data.PartSize, data.PartNum, h.Sum32()))
     // Nzb
     n := NzbFile{
-        Groups: strings.Split(groups, ","),
-        Poster: Config.Global.From,
-        Date: unix,
+        Groups:  strings.Split(groups, ","),
+        Poster:  Config.Global.From,
+        Date:    t.Unix(),
         Subject: subj,
     }
     s := NzbSegment{
-        Bytes: data.PartSize,
-        Number: data.PartNum,
+        Bytes:     data.PartSize,
+        Number:    data.PartNum,
         MessageId: msgid,
     }
     return &Article{Body: buf.Bytes(), NzbData: n, Segment: s, FileName: data.FileName}

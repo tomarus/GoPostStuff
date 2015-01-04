@@ -3,16 +3,35 @@ package main
 import (
 	"encoding/xml"
 	"io/ioutil"
-	//	"path"
 	"regexp"
 	"strings"
+	"sort"
 )
+
+const (
+	NzbHeader = `<?xml version="1.0" encoding="UTF-8"?>` + "\n"
+	NzbDoctype = `<!DOCTYPE nzb PUBLIC "-//newzBin//DTD NZB 1.1//EN" "http://www.newzbin.com/DTD/nzb/nzb-1.1.dtd">` + "\n"
+)
+
+type NzbFiles []NzbFile
+
+func (slice NzbFiles) Len() int {
+	return len(slice)
+}
+
+func (slice NzbFiles) Less(i, j int) bool {
+	return slice[i].Subject < slice[j].Subject;
+}
+
+func (slice NzbFiles) Swap(i, j int) {
+	slice[i], slice[j] = slice[j], slice[i]
+}
 
 type Nzb struct {
 	XMLName xml.Name  `xml:"nzb"`
 	XMLns   string    `xml:"xmlns,attr"`
 	Head    []Meta    `xml:"head>meta"`
-	File    []NzbFile `xml:"file"`
+	File    NzbFiles  `xml:"file"`
 }
 
 type Meta struct {
@@ -36,14 +55,14 @@ type NzbSegment struct {
 }
 
 func CreateNzb(filename string, nzb *Nzb) error {
+	sort.Sort(nzb.File)
 	nzb.XMLns = "http://www.newzbin.com/DTD/2003/nzb"
-	output, err := xml.MarshalIndent(nzb, "", "    ")
-	if err != nil {
-		return err
-	}
-	err = ioutil.WriteFile(filename, output, 0x777)
-	if err != nil {
-		return err
+	if output, err := xml.MarshalIndent(nzb, "", "    "); err == nil {
+		output = []byte(NzbHeader + NzbDoctype + string(output))
+		err := ioutil.WriteFile(filename, output, 0755)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }

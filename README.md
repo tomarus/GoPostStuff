@@ -54,7 +54,8 @@ Usage
 * -v: Verbose mode. This will spam a lot of extra debug information.
 * -version: prints the current gps version.
 * -nzb "test.nzb": Create nzb file after posting.
-
+* -pass "PASSWORD": Add password for rar archives to nzb head.
+* -server "SERVER": Use specified server to post.
 
 Example
 -------
