@@ -15,17 +15,15 @@ const (
 
 type NzbFiles []NzbFile
 
-func (slice NzbFiles) Len() int {
-	return len(slice)
-}
+func (s NzbFiles) Len() int           { return len(s) }
+func (s NzbFiles) Less(i, j int) bool { return s[i].Subject < s[j].Subject }
+func (s NzbFiles) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
 
-func (slice NzbFiles) Less(i, j int) bool {
-	return slice[i].Subject < slice[j].Subject;
-}
+type NzbSegments []NzbSegment
 
-func (slice NzbFiles) Swap(i, j int) {
-	slice[i], slice[j] = slice[j], slice[i]
-}
+func (s NzbSegments) Len() int           { return len(s) }
+func (s NzbSegments) Less(i, j int) bool { return s[i].Number < s[j].Number }
+func (s NzbSegments) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
 
 type Nzb struct {
 	XMLName xml.Name  `xml:"nzb"`
@@ -44,7 +42,7 @@ type NzbFile struct {
 	Date     int64        `xml:"date,attr"`
 	Subject  string       `xml:"subject,attr"`
 	Groups   []string     `xml:"groups>group"`
-	Segments []NzbSegment `xml:"segments>segment"`
+	Segments NzbSegments  `xml:"segments>segment"`
 }
 
 type NzbSegment struct {
@@ -56,6 +54,9 @@ type NzbSegment struct {
 
 func CreateNzb(filename string, nzb *Nzb) error {
 	sort.Sort(nzb.File)
+	for i, _ := range nzb.File {
+		sort.Sort(nzb.File[i].Segments)
+	}
 	nzb.XMLns = "http://www.newzbin.com/DTD/2003/nzb"
 	if output, err := xml.MarshalIndent(nzb, "", "    "); err == nil {
 		output = []byte(NzbHeader + NzbDoctype + string(output))
