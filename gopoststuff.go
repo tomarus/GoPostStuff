@@ -30,6 +30,7 @@ var nzbMetaPass = flag.String("rarpw", "", "Add password for rar archives to nzb
 var serverFlag = flag.String("server", "", "Use specified server to post.")
 var hostFlag = flag.String("host", "gopoststuff", "Hostname to use in Message-ID")
 var prefixFlag = flag.String("prefix", "", "String to place at the start of every subject line - a space will be added.")
+var fromFlag = flag.String("from", "", "The 'From' address to put on posts.")
 
 // Logger
 var log = logging.MustGetLogger("gopoststuff")

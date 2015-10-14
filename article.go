@@ -29,8 +29,15 @@ type ArticleData struct {
 }
 
 func NewArticle(p []byte, data *ArticleData, subject string) *Article {
+    var from string
+    if len(*fromFlag) > 0 {
+        from = *fromFlag
+    } else {
+        from = Config.Global.From
+    }
+
     buf := new(bytes.Buffer)
-    buf.WriteString(fmt.Sprintf("From: %s\r\n", Config.Global.From))
+    buf.WriteString(fmt.Sprintf("From: %s\r\n", from))
 
     var groups string
     if len(*groupFlag) > 0 {
@@ -49,9 +56,9 @@ func NewArticle(p []byte, data *ArticleData, subject string) *Article {
     // Build subject
     // spec: c1 [fnum/ftotal] - "filename" yEnc (pnum/ptotal)
     var subj string
-	if len(*prefixFlag) > 0 {
-		subj = fmt.Sprintf("%s %s", *prefixFlag, subject)
-	} else if len(Config.Global.SubjectPrefix) > 0 {
+    if len(*prefixFlag) > 0 {
+        subj = fmt.Sprintf("%s %s", *prefixFlag, subject)
+    } else if len(Config.Global.SubjectPrefix) > 0 {
         subj = fmt.Sprintf("%s %s", Config.Global.SubjectPrefix, subject)
     } else {
         subj = subject
@@ -75,7 +82,7 @@ func NewArticle(p []byte, data *ArticleData, subject string) *Article {
     // Nzb
     n := NzbFile{
         Groups:  strings.Split(groups, ","),
-        Poster:  Config.Global.From,
+        Poster:  from,
         Date:    t.Unix(),
         Subject: subj,
     }
