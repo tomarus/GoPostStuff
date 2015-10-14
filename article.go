@@ -49,7 +49,9 @@ func NewArticle(p []byte, data *ArticleData, subject string) *Article {
     // Build subject
     // spec: c1 [fnum/ftotal] - "filename" yEnc (pnum/ptotal)
     var subj string
-    if len(Config.Global.SubjectPrefix) > 0 {
+	if len(*prefixFlag) > 0 {
+		subj = fmt.Sprintf("%s %s", *prefixFlag, subject)
+	} else if len(Config.Global.SubjectPrefix) > 0 {
         subj = fmt.Sprintf("%s %s", Config.Global.SubjectPrefix, subject)
     } else {
         subj = subject
