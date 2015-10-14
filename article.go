@@ -42,7 +42,7 @@ func NewArticle(p []byte, data *ArticleData, subject string) *Article {
 
     var msgid string
     t := time.Now()
-    msgid = fmt.Sprintf("%.5f$gps@gopoststuff", float64(t.UnixNano())/1.0e9)
+    msgid = fmt.Sprintf("%.5f$gps@%s", float64(t.UnixNano())/1.0e9, *hostFlag)
     buf.WriteString(fmt.Sprintf("Message-ID: <%s>\r\n", msgid))
     buf.WriteString(fmt.Sprintf("X-Newsposter: KereMagicPoster\r\n"))
 
