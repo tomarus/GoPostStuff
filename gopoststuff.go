@@ -31,8 +31,8 @@ var serverFlag = flag.String("server", "", "Use specified server to post.")
 var hostFlag = flag.String("host", "gopoststuff", "Hostname to use in Message-ID")
 var prefixFlag = flag.String("prefix", "", "String to place at the start of every subject line - a space will be added.")
 var fromFlag = flag.String("from", "", "The 'From' address to put on posts.")
-var flushConFlag = flag.String("flushcon", "5000", "The time between temporary disconnects from the Usenet Server to prevent timeouts.")
-
+var flushConFlag = flag.String("flushcon", "5000", "The time in seconds between temporary disconnects from the Usenet Server to prevent timeouts.")
+var waitTimeFlag = flag.String("waittime", "10", "The waiting time in seconds time before re-connect for flushcon.")
 // Logger
 var log = logging.MustGetLogger("gopoststuff")
 
