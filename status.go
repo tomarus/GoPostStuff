@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/obiwantje/gopoststuff/simplenntp"
+	"github.com/izolight/gopoststuff/simplenntp"
 	"time"
 )
 
