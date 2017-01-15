@@ -3,7 +3,7 @@ package main
 import (
     "bytes"
     "fmt"
-    "github.com/izolight/gopoststuff/yencode"
+    "github.com/Atmos01/gopoststuff/yencode"
     "hash/crc32"
     "strings"
     "time"
