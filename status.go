@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/Atmos01/gopoststuff/simplenntp"
 	"time"
+
+	"github.com/tomarus/gopoststuff/simplenntp"
 )
 
 func StatusLogger(ticker *time.Ticker, tdchan chan *simplenntp.TimeData) {

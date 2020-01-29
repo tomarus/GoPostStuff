@@ -2,12 +2,15 @@ package main
 
 import (
 	"fmt"
-	"github.com/Atmos01/gopoststuff/simplenntp"
 	"os"
 	"path/filepath"
 	"sync"
 	"time"
+
+	"github.com/tomarus/gopoststuff/simplenntp"
 )
+
+var slock sync.Mutex
 
 type FileData struct {
 	path string
@@ -25,8 +28,10 @@ func Spawner(filenames []string) {
 	files := make([]FileData, 0)
 
 	var altnzbpath string
+	slock.Lock()
 	nzbinfo := make(map[string]NzbFile, 0)
 	segs := make(map[string][]NzbSegment, 0)
+	slock.Unlock()
 
 	log.Debug("Spawner started")
 
@@ -171,8 +176,10 @@ func Spawner(filenames []string) {
 					if err != nil {
 						log.Fatalf("[%s:%02d] Post error: %s", name, connID, err)
 					} else {
+						slock.Lock()
 						nzbinfo[article.FileName] = article.NzbData
 						segs[article.FileName] = append(segs[article.FileName], article.Segment)
+						slock.Unlock()
 					}
 					t.bytes += int64(len(article.Body))
 				}
@@ -247,6 +254,7 @@ func Spawner(filenames []string) {
 		nzb.Head = append(nzb.Head, Meta{Type: "password", Value: *nzbMetaPass})
 	}
 
+	slock.Lock()
 	for i, _ := range nzbinfo {
 		n := nzbinfo[i]
 		nzb.File = append(nzb.File, NzbFile{
@@ -257,6 +265,7 @@ func Spawner(filenames []string) {
 			Segments: segs[i],
 		})
 	}
+	slock.Unlock()
 
 	err := CreateNzb(nzbpath, &nzb)
 	if err != nil {
